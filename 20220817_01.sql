@@ -104,7 +104,7 @@
              FROM   MEMBER
              ORDER  BY 2 DESC) C
     WHERE   ROWNUM <= 3;
-    V_SUM NUMBER:=0;
+    V_SUM   NUMBER:=0;
     V_RES   VARCHAR2(100);
  BEGIN
     FOR REC IN CUR_MILE LOOP
