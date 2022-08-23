@@ -21,3 +21,5 @@
  1) SUM(column | expr)
   . 기술된 컬럼의 값이나 수식의 결과를 모두 합한 결과 반환
   . 
+  
+ 2) AVG(column)
