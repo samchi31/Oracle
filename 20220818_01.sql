@@ -70,7 +70,7 @@
             ROUND((SALARY + SALARY * TRUNC((SYSDATE - HIRE_DATE)/365) / 100) * 0.87, 1) AS 지급액
     FROM    HR.EMPLOYEES;
     
- 4) FLOOR(n), CEIL(n) - *
+ 4) FLOOR(n), CEIL(n) 
     - 보통 화폐에 관련된 데이터 처리 사용
     - FLOOR : n과 같거나(n이 정수일 때) n보다 작은 정수 중 가장 큰 정수
     - CEIL : n과 같거나(n이 정수일 때) n보다 큰 정수 중 가장 작은 정수
