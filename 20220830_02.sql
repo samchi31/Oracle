@@ -86,7 +86,14 @@
     ORDER   BY  1;
     
 사용 예) 2020년 상반기(1-6월) 모든 제품별 매입수량집계를 조회하시오
-
+    
+    SELECT  B.PROD_NAME AS 제품,
+            SUM(A.BUY_QTY) AS 매입수량집계
+    FROM    BUYPROD A, PROD B
+    WHERE   A.BUY_PROD = B.PROD_ID
+    GROUP   BY  B.PROD_NAME
+    ORDER   BY  1;
+    
 사용 예) 2020년 상반기(1-6월) 모든 제품별 매출수량집계를 조회하시오
 
 사용 예) 2020년 상반기(1-6월) 모든 제품별 매입/매출수량집계를 조회하시오

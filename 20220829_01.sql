@@ -230,3 +230,23 @@
     INNER   JOIN    HR.LOCATIONS B ON(A.LOCATION_ID = B.LOCATION_ID)
     INNER   JOIN    HR.COUNTRIES C ON(B.COUNTRY_ID = C.COUNTRY_ID)
     WHERE   C.COUNTRY_NAME != 'United States of America';
+    
+    (일반조인문) 
+       SELECT A.DEPARTMENT_ID AS 부서번호, 
+              A.DEPARTMENT_NAME AS 부서명, 
+              B.COUNTRY_ID||' '||B.CITY||' '||B.STREET_ADDRESS AS 주소, 
+              C.COUNTRY_NAME AS 국가명
+         FROM HR.DEPARTMENTS A, HR.LOCATIONS B, HR.COUNTRIES C
+        WHERE A.LOCATION_ID=B.LOCATION_ID
+          AND B.COUNTRY_ID=C.COUNTRY_ID
+          AND B.COUNTRY_ID != 'US';
+         
+    (ANSI조인문)      
+       SELECT A.DEPARTMENT_ID AS 부서번호, 
+              A.DEPARTMENT_NAME AS 부서명, 
+              B.COUNTRY_ID||' '||B.CITY||' '||B.STREET_ADDRESS AS 주소, 
+              C.COUNTRY_NAME AS 국가명
+         FROM HR.DEPARTMENTS A
+   INNER JOIN HR.LOCATIONS B ON(A.LOCATION_ID=B.LOCATION_ID)
+   INNER JOIN HR.COUNTRIES C ON(B.COUNTRY_ID=C.COUNTRY_ID)
+          AND B.COUNTRY_ID != 'US';
