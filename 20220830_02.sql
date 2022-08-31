@@ -85,15 +85,62 @@
     WHERE   A.BUYER_ID = TBL.CID(+)
     ORDER   BY  1;
     
-사용 예) 2020년 상반기(1-6월) 모든 제품별 매입수량집계를 조회하시오
-    
-    SELECT  B.PROD_NAME AS 제품,
+사용 예) 2020년 1월 모든 제품별 매입수량집계를 조회하시오 -- 모든 -> 외부조인
+    (일반 외부 조인) --내부조인 발생
+    SELECT  B.PROD_ID AS 제품코드,      -- 공통으로 있을 경우 많은 쪽의 속성을 쓴다
+            B.PROD_NAME AS 제품명,
             SUM(A.BUY_QTY) AS 매입수량집계
     FROM    BUYPROD A, PROD B
-    WHERE   A.BUY_PROD = B.PROD_ID
-    GROUP   BY  B.PROD_NAME
+    WHERE   A.BUY_PROD(+) = B.PROD_ID      -- PROD > BUYPROD
+    AND     A.BUY_DATE BETWEEN TO_DATE('20200101') AND TO_DATE('20200131')
+    GROUP   BY  B.PROD_ID, B.PROD_NAME
     ORDER   BY  1;
     
-사용 예) 2020년 상반기(1-6월) 모든 제품별 매출수량집계를 조회하시오
-
-사용 예) 2020년 상반기(1-6월) 모든 제품별 매입/매출수량집계를 조회하시오
+    (ANSI 외부 조인)
+    SELECT  B.PROD_ID AS 제품코드,      -- 공통으로 있을 경우 많은 쪽의 속성을 쓴다
+            B.PROD_NAME AS 제품명,
+            SUM(A.BUY_QTY) AS 매입수량집계
+    FROM    BUYPROD A
+    RIGHT   OUTER   JOIN    PROD B ON(A.BUY_PROD = B.PROD_ID
+                    AND     A.BUY_DATE BETWEEN TO_DATE('20200101') AND TO_DATE('20200131'))    
+    GROUP   BY  B.PROD_ID, B.PROD_NAME
+    ORDER   BY  1;
+    
+    (SUB QUERY 사용)
+    SELECT  B.PROD_ID AS 제품코드,      -- 공통으로 있을 경우 많은 쪽의 속성을 쓴다
+            B.PROD_NAME AS 제품명,
+            A.BSUM AS 매입수량집계
+    FROM    PROD B,
+            (--2020년 1월 제품별 매입수량 집계 -- 내부조인
+            SELECT  BUY_PROD,
+                    SUM(BUY_QTY) AS BSUM
+            FROM    BUYPROD 
+            WHERE   BUY_DATE BETWEEN TO_DATE('20200101') AND TO_DATE('20200131')
+            GROUP   BY BUY_PROD) A
+    WHERE   B.PROD_ID = A.BUY_PROD(+)
+    ORDER   BY  1;
+사용 예) 2020년 4월 모든 제품별 매출수량집계를 조회하시오
+        Alias    제품코드, 제품명, 매출수량합계
+    (ANSI FORMAT)
+    SELECT  A.PROD_ID AS 제품코드, 
+            A.PROD_NAME AS 제품명, 
+            SUM(B.CART_QTY) AS 매출수량합계
+    FROM    PROD A 
+    LEFT    OUTER   JOIN    CART B ON(B.CART_PROD = A.PROD_ID 
+                    AND     B.CART_NO LIKE '202004%')
+    GROUP   BY  A.PROD_ID, A.PROD_NAME
+    ORDER   BY  1;
+    
+사용 예) 2020년 6월 모든 제품별 매입/매출수량집계를 조회하시오
+        Alias   제품코드, 제품명, 매입수량, 매출수량
+    SELECT  A.PROD_ID AS 제품코드, 
+            A.PROD_NAME AS 제품명, 
+            SUM(B.BUY_QTY) AS 매입수량, 
+            SUM(C.CART_QTY) AS 매출수량
+    FROM    PROD A
+    LEFT    OUTER   JOIN    BUYPROD B ON(A.PROD_ID = B.BUY_PROD
+                    AND     B.BUY_DATE BETWEEN TO_DATE('20200601') AND TO_DATE('20200630'))
+    LEFT    OUTER   JOIN    CART C ON(C.CART_PROD = A.PROD_ID 
+                    AND     C.CART_NO LIKE '202006%')
+    GROUP   BY  A.PROD_ID, A.PROD_NAME
+    ORDER   BY  1;
