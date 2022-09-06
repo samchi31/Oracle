@@ -35,3 +35,10 @@ COMMIT;
     SELECT  *
     FROM    MEMBER
     WHERE   SUBSTR(MEM_REGNO2,2,4) = '4558';
+    
+1. 인덱스 재구성
+ - 인덱스 파일을 다른 테이블 스페이스로 이동 한 후
+ - 업데이트나 삭제 등의 작업이 많이 수행된 직후 인덱스를 재구성 해야 하는 경우
+ (사용형식)
+ ALTER  INDEX   인덱스명    REBUILD;
+ 
